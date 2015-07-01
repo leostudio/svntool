@@ -3,15 +3,14 @@
 var _ = require('lodash');
 var shell = require('shelljs');
 var xmlParse = require('xml2js').parseString;
-var path = require('path');
-var util = require('util');
+
 var argv = require('yargs')
-    .option('f',{
-        alias:"prefix",
-        demand:true,
-        describe:'path prefix to remove',
-        default:'/手机医生站/src/trunk/',
-        type:'string'
+    .option('f', {
+        alias: "prefix",
+        demand: true,
+        describe: 'path prefix to remove',
+        default: '',
+        type: 'string'
     })
     .option('s', {
         alias: 'search',
@@ -35,21 +34,35 @@ var argv = require('yargs')
 var svnPath = argv.p;
 var keyWord = argv.s;
 var logNum = argv.l;
-var prefix=argv.f;
+var prefix = argv.f;
 
+function initDefault() {
+    if (argv.f === '') {
+        var tmpRelativePathResult = shell.exec('svnp -p ' + svnPath);
+        if (tmpRelativePathResult.code !== 0) {
+            prefix=tmpRelativePathResult.output;
+        } else {
+            prefix='';
+        }
+    }else{
+        prefix='';
+    }
+}
 
-var command='svn log -l ' + logNum + ' -v --xml --search '+keyWord+' '+svnPath;
+initDefault();
+
+var command = 'svn log -l ' + logNum + ' -v --xml --search ' + keyWord + ' ' + svnPath;
 shell.exec(command, {
     silent: true
 }, function(code, output) {
-    if(code!==0){
+    if (code !== 0) {
         return;
     }
-    var logData = xmlParse(output, function(err, result) {
+    xmlParse(output, function(err, result) {
         var logentrys = result.log.logentry;
         _.forEach(logentrys, function(logentry) {
-            var revision=logentry.$.revision;
-            if(revision){
+            var revision = logentry.$.revision;
+            if (revision) {
                 console.log(revision);
             }
         });

@@ -4,7 +4,6 @@ var _ = require('lodash');
 var shell = require('shelljs');
 var xmlParse = require('xml2js').parseString;
 var path = require('path');
-var util = require('util');
 var argv = require('yargs')
     .option('f',{
         alias:"prefix",
@@ -36,6 +35,21 @@ var svnPath = argv.p;
 var keyWord = argv.s;
 var logNum = argv.l;
 var prefix=argv.f;
+
+function initDefault() {
+    if (argv.f === '') {
+        var tmpRelativePathResult = shell.exec('svnp -p ' + svnPath);
+        if (tmpRelativePathResult.code !== 0) {
+            prefix=tmpRelativePathResult.output;
+        } else {
+            prefix='';
+        }
+    }else{
+        prefix='';
+    }
+}
+
+initDefault();
 
 var addFiles = [];
 var delFiles = [];
@@ -85,7 +99,7 @@ shell.exec(command, {
     if(code!==0){
         return;
     }
-    var logData = xmlParse(output, function(err, result) {
+    xmlParse(output, function(err, result) {
         var logentrys = result.log.logentry;
         _.forEach(logentrys, function(logentry) {
             var paths = logentry.paths[0].path;

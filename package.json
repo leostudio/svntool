@@ -1,10 +1,11 @@
 {
   "name": "svntool",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a kyee svn tool",
   "bin": {
     "svnc": "./svnc.js",
-    "svnr": "./svnr.js"
+    "svnr": "./svnr.js",
+    "svnp": "./svnp.js"
   },
   "keywords": [
     "svn",

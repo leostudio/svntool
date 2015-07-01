@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "a kyee svn tool",
   "bin":{
-    "svntool":"svntool.js"
+    "svntool":"./svntool.js"
   },
   "keywords": [
     "svn",

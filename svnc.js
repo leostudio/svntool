@@ -10,7 +10,7 @@ var argv = require('yargs')
         alias:"prefix",
         demand:true,
         describe:'path prefix to remove',
-        default:'',
+        default:'/手机医生站/src/trunk/',
         type:'string'
     })
     .option('s', {
@@ -35,7 +35,7 @@ var argv = require('yargs')
 var svnPath = argv.p;
 var keyWord = argv.s;
 var logNum = argv.l;
-var prefix="/手机医生站/src/trunk/";
+var prefix=argv.f;
 
 var addFiles = [];
 var delFiles = [];

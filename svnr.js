@@ -5,13 +5,6 @@ var shell = require('shelljs');
 var xmlParse = require('xml2js').parseString;
 
 var argv = require('yargs')
-    .option('f', {
-        alias: "prefix",
-        demand: true,
-        describe: 'path prefix to remove',
-        default: '',
-        type: 'string'
-    })
     .option('s', {
         alias: 'search',
         demand: true,
@@ -34,31 +27,20 @@ var argv = require('yargs')
 var svnPath = argv.p;
 var keyWord = argv.s;
 var logNum = argv.l;
-var prefix = argv.f;
-
-function initDefault() {
-    if (argv.f === '') {
-        var tmpRelativePathResult = shell.exec('svnp -p ' + svnPath);
-        if (tmpRelativePathResult.code !== 0) {
-            prefix=tmpRelativePathResult.output;
-        } else {
-            prefix='';
-        }
-    }else{
-        prefix='';
-    }
-}
-
-initDefault();
 
 var command = 'svn log -l ' + logNum + ' -v --xml --search ' + keyWord + ' ' + svnPath;
 shell.exec(command, {
     silent: true
 }, function(code, output) {
     if (code !== 0) {
+        console.error('error:',error);
         return;
     }
     xmlParse(output, function(err, result) {
+        if(err){
+            console.error('error:',err);
+            return;
+        }
         var logentrys = result.log.logentry;
         _.forEach(logentrys, function(logentry) {
             var revision = logentry.$.revision;

@@ -9,7 +9,7 @@ var argv = require('yargs')
         alias:"prefix",
         demand:true,
         describe:'path prefix to remove',
-        default:'/手机医生站/src/trunk/',
+        default:'',
         type:'string'
     })
     .option('s', {
@@ -38,8 +38,8 @@ var prefix=argv.f;
 
 function initDefault() {
     if (argv.f === '') {
-        var tmpRelativePathResult = shell.exec('svnp -p ' + svnPath);
-        if (tmpRelativePathResult.code !== 0) {
+        var tmpRelativePathResult = shell.exec('svnp -p ' + svnPath,{silent:true});
+        if (tmpRelativePathResult.code === 0) {
             prefix=tmpRelativePathResult.output;
         } else {
             prefix='';
@@ -97,9 +97,14 @@ shell.exec(command, {
     silent: true
 }, function(code, output) {
     if(code!==0){
+        console.error('error:',output);
         return;
     }
     xmlParse(output, function(err, result) {
+        if(err){
+            console.error('error:',err);
+            return;
+        }
         var logentrys = result.log.logentry;
         _.forEach(logentrys, function(logentry) {
             var paths = logentry.paths[0].path;

@@ -6,6 +6,10 @@
 * 获取具体log keyword对应的差异列表
 * 获取具体log keyword对应的提交版本号
 
+##安装
+```shell
+npm install -g leoliang-sh/svntool
+```
 ##使用
 ###获取当前svn路径
 ```shell
